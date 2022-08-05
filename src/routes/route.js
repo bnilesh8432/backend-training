@@ -1,10 +1,17 @@
 const express = require('express');
-const abc = require('../introduction/intro')
+const firstQuestion = require('../logger/logger')
+const secondQuestion = require('../util/helper')
+const thirdQuestion = require('../validator/formatter')
 const router = express.Router();
 
 router.get('/test-me', function (req, res) {
-    console.log('My batch is', abc.name)
-    abc.printName()
+    firstQuestion.func();
+    secondQuestion.date();
+    secondQuestion.month();
+    secondQuestion.info();
+    thirdQuestion.trim('   my string   ');
+    thirdQuestion.lower('NODE JS IS AN RUNTIME ENVIORNMENT');
+    thirdQuestion.upper(' this is 3rd week of funtionup cohort');
     res.send('My second ever api!')
 });
 
