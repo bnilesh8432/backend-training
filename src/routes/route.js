@@ -81,7 +81,9 @@ router.get("/films/:filmId" , function (req , res){
 
 router.get('/sol1', function(req ,res){
     const array = [1,2,3,5,6,7];
-    const n =array.length + 1;
+
+    const n = array.length + 1;
+
     const sum = array.reduce((result,num) =>{ return result + num});
     const missingNumber = n*(n+1)/2 - sum ;
     console.log(missingNumber);
