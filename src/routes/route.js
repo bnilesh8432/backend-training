@@ -45,4 +45,45 @@ let players =
 
 
  });
+ // Optional Question
+
+//  router.post('/players/:playerName/bookings/:bookingId',function(req,res){
+//     const reqParams = req.params ; // parameters i.playerName ii.bookingId
+//     const booking = req.body;   // fetching data from body
+//     const pName = reqParams.playerName; //name from params
+//     const bookingId = reqParams.bookingId; //bookingId from params
+//     let isNameExist = false ;   // Assuming name is not exist 
+
+//     //cheking players array object
+//     for(let i=0 ; i<players.length ; i++){
+//         //checking player name from params is equal to the name inside players array object
+//         if(pName === players[i].name){
+//             isNameExist = true; // name is exist
+
+//             // checking players object has booking property 
+//             if(players[i].hasOwnProperty('Booking') == true){
+
+//                 // if it has booking property exist then checking booning number is equal to booking id
+//                 if(players[i].Booking[0].bookingNumber == bookingId){
+//                     return res.send('booking was already processed')
+//                 }
+//             }
+//             else{
+//                 // adding  booking property to player inside that we are storing all details of booking
+//                 players[i]['Booking'] = [booking];
+//             }
+//             break ;
+//         }
+//     }
+//     // if name is not exist 
+//     if(isNameExist == false){
+//         return res.send("Player Name Dosen't Exist")
+//     }
+//     console.log(reqParams)
+//     console.log(players)
+//    // res.send(players)
+//  });
+
+
+
 module.exports = router;
