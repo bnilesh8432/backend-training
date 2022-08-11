@@ -81,9 +81,48 @@ let players =
 //     }
 //     console.log(reqParams)
 //     console.log(players)
-//    // res.send(players)
+//    res.send(players)
 //  });
 
 
+let persons =[
+    {
+        "name" : "PK",
+        "age"  : 10,
+        "votingStatus" : false
+    },
+    {
+        "name" : "SK",
+        "age"  : 20,
+        "votingStatus" : false
+    },
+    {
+        "name" : "AA",
+        "age"  : 70,
+        "votingStatus" : false
+    },
+    {
+        "name" : "SC",
+        "age"  : 5,
+        "votingStatus" : false
+    },
+    {
+        "name" : "HO",
+        "age"  : 40,
+        "votingStatus" : false
+    }
+];
 
+router.post('/persons' , function(req,res){
+    const ageQuery = req.query.age;
+    const result = persons.filter(obj => obj.age > ageQuery);
+    const eligableVoters = []
+    for(let i =0 ; i< result.length ; i++){
+        person = result[i];
+        person.votingStatus = true ;
+        eligableVoters.push(person)
+    }
+ 
+    res.send(eligableVoters);
+});
 module.exports = router;
