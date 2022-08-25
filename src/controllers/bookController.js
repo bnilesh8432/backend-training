@@ -1,79 +1,77 @@
-const { count } = require("console")
-const BookModel = require("../models/bookModel")
+const BookModel = require("../models/newBookModel")
+const AuthorModel = require("../models/newAuthorModel")
+const PublisherModel = require("../models/newPublisherModel")
+const mongoose = require('mongoose')
 
-const createBook= async function (req, res) {
-    let data= req.body
 
-    let savedData= await BookModel.create(data)
-    res.send({msg: savedData})
+const createBook = async function (req, res) {
+    // let book = req.body
+    // const {author , publisher} = book
+    // let authorId = await AuthorModel.findById(author)
+    // let publisherId = await PublisherModel.findById(publisher)
+
+
+    // if(!book.author){
+    //     return res.send("Plz Enter Author Id")
+    // }
+    // else if(authorId == null){
+    //     return res.send("Plz Enter Valid Author ID")
+    // }
+
+    // if(!book.publisher){
+    //     return res.send("Plz Enter Publisher Id")
+    // }
+    // else if(publisherId == null){
+    //     return res.send("Plz Enter Valid Publisher ID")
+    // }
+    let newBook = req.body
+    const { author, publisher } = newBook
+    if (!author) {
+        return res.send("author_id does not exist")
+    }
+    if (!publisher) {
+        return res.send("publisher_id does not exist")
+    }
+
+    let author_idvalid = await AuthorModel.findById(author)
+    if (!author_idvalid) {
+        return res.send("not a valid author_id")
+    }
+
+    let publisher_idvalid = await PublisherModel.findById(publisher)
+    if (!publisher_idvalid) {
+        return res.send("not a valid publisher_id")
+    }
+    let saveBook = await BookModel.create(newBook)
+    return res.send({ data: saveBook })
 }
 
-
-
-
-
-
-const getBooksData = async function (req, res) {
-    let allBooks = await BookModel.find({ authorName: "HO" })
-    console.log(allBooks)
-    if (allBooks.length > 0) res.send({ msg: allBooks, condition: true })
-    else res.send({ msg: "No books found", condition: false })
+const getBook = async function (req, res) {
+    let Books = await BookModel.find().populate("author publisher")
+    res.send({ data: Books })
 }
 
+const updateBook = async function (req, res) {
+    const publisher = await PublisherModel.find({ name: { $in: ["Penguin", "HarperCollins"] } }).select({ _id: 1 })
 
-const updateBooks = async function (req, res) {
-    let data = req.body // {sales: "1200"}
-    // let allBooks= await BookModel.updateMany( 
-    //     { author: "SK"} , //condition
-    //     { $set: data } //update in data
-    //  )
-    let allBooks = await BookModel.findOneAndUpdate(
-        { authorName: "ABC" }, //condition
-        { $set: data }, //update in data
-        { new: true, upsert: true } ,// new: true - will give you back the updated document // Upsert: it finds and updates the document but if the doc is not found(i.e it does not exist) then it creates a new document i.e UPdate Or inSERT
-    )
-
-    res.send({ msg: allBooks })
+    publisher.map(async function (pid) {
+        const saveBook = await BookModel.updateMany({ publisher: pid }, { isHardCover: true })
+    })
+    const updatedBook = await BookModel.find().populate("author publisher")
+    res.send(updatedBook)
 }
 
-const deleteBooks = async function (req, res) {
-    // let data = req.body 
-    let allBooks = await BookModel.updateMany(
-        { authorName: "FI" }, //condition
-        { $set: { isDeleted: true } }, //update in data
-        { new: true } ,
-    )
+const updatePrice = async function (req, res) {
+    const author = await AuthorModel.find({ rating: { $gte: 3.5 } }).select({ _id: 1 })
 
-    res.send({ msg: allBooks })
+    author.map(async function (aid) {
+        const updateprice = await BookModel.updateMany({ author: aid }, { $inc: { price: 10 } })
+    })
+    const updatedBook = await BookModel.find().populate("author publisher")
+    res.send(updatedBook)
 }
-
-
-
-const totalSalesPerAuthor = async function (req, res) {
-    // let data = req.body 
-    let allAuthorSales = await BookModel.aggregate(
-        [
-            { $group: { _id: "$authorName", totalNumberOfSales: { $sum: "$sales" } } },
-            { $sort: { totalNumberOfSales: -1 } }
-        ]
-    )
-
-    res.send({ msg: allAuthorSales })
-}
-
-
-
-
-// CRUD OPERATIONS:
-// CREATE
-// READ
-// UPDATE
-// DELETE
-
-
 
 module.exports.createBook = createBook
-module.exports.getBooksData = getBooksData
-module.exports.updateBooks = updateBooks
-module.exports.deleteBooks = deleteBooks
-module.exports.totalSalesPerAuthor = totalSalesPerAuthor
+module.exports.getBook = getBook
+module.exports.updateBook = updateBook
+module.exports.updatePrice = updatePrice
