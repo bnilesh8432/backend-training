@@ -3,6 +3,7 @@
      if(!appUser){
         res.send("Plz enter isFreeAppUser property in header")
      }
+     req['appUser'] = Boolean(appUser)
      next()
  }
  module.exports.validate = validate

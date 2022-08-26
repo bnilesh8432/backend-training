@@ -13,18 +13,18 @@ const createOrder = async function (req,res){
     const isValidPid = await ProductModel.findById(pid)
     if(!isValidPid){return res.send("Plz Enter Valid prodcut id")}
 
-    const isFreeAppUser = req.headers['isfreeappuser']
+    const isFreeAppUser = req.appUser
 
-    if(isFreeAppUser == 'true'){
+    if(isFreeAppUser == true){
         order.amount = 0;
         order.isFreeAppUser = isFreeAppUser;
         const saveOrder = await OrderModel.create(order)
         return res.send({order : saveOrder})
     }
-    else{
+    else if(isFreeAppUser == false){
         const user = await UserModel.findById(uid)
 
-        if(user['balance'] <=0)
+        if(user['balance'] < order.amount)
         {
             return res.send(" You Have not enough balance ")
         }
