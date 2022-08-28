@@ -1,6 +1,7 @@
 const ProductModel = require('../models/productModel')
 const UserModel = require("../models/userModel")
 const OrderModel = require("../models/orderModel")
+const moment = require('moment')
 
 const createOrder = async function (req,res){
     const order = req.body;
@@ -23,7 +24,10 @@ const createOrder = async function (req,res){
     }
     else if(isFreeAppUser == false){
         const user = await UserModel.findById(uid)
+        const product = await ProductModel.findById(pid)
 
+        order.amount = product.price
+        order.date = moment().format("DD/MM/YYYY")
         if(user['balance'] < order.amount)
         {
             return res.send(" You Have not enough balance ")
