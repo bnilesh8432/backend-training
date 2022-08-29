@@ -41,7 +41,7 @@ const getUserInfo = async function(req,res){
 const updateUser = async function (req,res){
   
   const uid = req.params.userId;
-  const user = await userModel.findOneAndUpdate({_id :uid},{age : 30},{new :true})
+  const user = await userModel.findOneAndUpdate({_id :uid},{age : 20},{new :true})
   return res.send({updatedUser : user })
 
 }
